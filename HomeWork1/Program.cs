@@ -4,14 +4,13 @@ namespace Tic_Tac_Toe
 {
     class Program
     {
-
-
         static char GetState(string position)
         {
+            //comment #1
             char a1;
             do
             {
-                Console.WriteLine($"What's the state of the {position} field: ");
+                Console.WriteLine($" What's the state of the {position} field: ");
                 a1 = Char.Parse(Console.ReadLine());
             }
             while (a1 != 'X' && a1 != 'O' && a1 != ' ');
