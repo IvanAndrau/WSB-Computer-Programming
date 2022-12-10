@@ -4,66 +4,106 @@ namespace Tic_Tac_Toe
 {
     class Program
     {
-        static char GetState(string position)
+
+        static bool IsDraw(char[] matrix)
         {
-            //comment #1
-            char a1;
+            for(int i=0; i<9;i++)
+            {
+                if (matrix[i] == ' ')
+                    return false;
+            }
+            return true;
+        }
+
+        static bool IsWin(char[] matrix, char Player)
+        {
+            return ( // if true returns true
+                (matrix[0] == matrix[1] && matrix[1] == matrix[2] && matrix[0] == Player) ||
+                (matrix[3] == matrix[4] && matrix[4] == matrix[5] && matrix[3] == Player) ||
+                (matrix[6] == matrix[7] && matrix[7] == matrix[8] && matrix[6] == Player) ||
+
+                (matrix[0] == matrix[3] && matrix[3] == matrix[6] && matrix[0] == Player) ||
+                (matrix[1] == matrix[4] && matrix[4] == matrix[7] && matrix[1] == Player) ||
+                (matrix[2] == matrix[5] && matrix[5] == matrix[8] && matrix[2] == Player) ||
+
+                (matrix[0] == matrix[4] && matrix[4] == matrix[8] && matrix[0] == Player) ||
+                (matrix[2] == matrix[4] && matrix[4] == matrix[6] && matrix[2] == Player));
+        }
+
+        static int Step(int StepNumber, char[] matrix)
+        {
+            bool success;
+            int index;
+
             do
             {
-                Console.WriteLine($" What's the state of the {position} field: ");
-                a1 = Char.Parse(Console.ReadLine());
-            }
-            while (a1 != 'X' && a1 != 'O' && a1 != ' ');
-            return a1;
+                char ch = (StepNumber % 2 != 0) ? 'X' : 'O'; //ask
+                Console.WriteLine($" Player {ch} step >");
+                success = int.TryParse(Console.ReadLine(), out index);              
+            } while (!success || index > 9 || index < 1 || matrix[index-1] != ' ');
+            return index;
         }
 
-
-        static void Draw(char a1, char a2, char a3, char b1, char b2, char b3, char c1, char c2, char c3)
+        static void Draw(char[] array)
         {
-            Console.WriteLine(" " + a1 + " | " + a2 + " | " + a3);
+            Console.WriteLine(" " + array[0] + " | " + array[1] + " | " + array[2]);
             Console.WriteLine("---+---+---");
-            Console.WriteLine(" " + b1 + " | " + b2 + " | " + b3);
+            Console.WriteLine(" " + array[3] + " | " + array[4] + " | " + array[5]);
             Console.WriteLine("---+---+---");
-            Console.WriteLine(" " + c1 + " | " + c2 + " | " + c3);
+            Console.WriteLine(" " + array[6] + " | " + array[7] + " | " + array[8]);
         }
-
-
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to Tic-Tac-Toe Game!");
-            char a1 = ' ', a2 = ' ', a3 = ' ', b1 = ' ', b2 = ' ', b3 = ' ', c1 = ' ', c2 = ' ', c3 = ' ';
+            while (true)
+            {
+                Console.WriteLine("1.New game \n2.About the Author \n3.Exit \n>");
+                int MenuChoice = int.Parse(Console.ReadLine());
 
 
-            a1 = GetState("row1 column1");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
 
-            a2 = GetState("row1 column2");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+                switch (MenuChoice)
+                {
+                    case 1:
 
-            a3 = GetState("row1 column3");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+                        char[] matrix = new char[] { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
 
-            b1 = GetState("row2 column1");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+                        int i = 0;
+                        do
+                        {
+                            Draw(matrix);
+                            int UserInput = Step(i + 1, matrix);
+                            matrix[UserInput - 1] = (i % 2 == 0) ? 'X' : 'O';
+                            i++;
+                            Console.Clear();
+                        } while (!IsWin(matrix, 'X') && !IsWin(matrix, 'O') && !IsDraw(matrix));
+                        Draw(matrix);
 
-            b2 = GetState("row2 column2");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+                        if (IsDraw(matrix))
+                        {
+                            Console.WriteLine("---Draw!---");
+                        }
 
-            b3 = GetState("row2 column3");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+                        if (IsWin(matrix, 'X'))
+                        {
+                            Console.WriteLine("Player X won!");
+                        }
 
-            c1 = GetState("row3 column1");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+                        if (IsWin(matrix, 'O'))
+                        {
+                            Console.WriteLine("Player O won!");
+                        }
 
-            c2 = GetState("row3 column2");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+                        break;
+                    case 2:
+                        Console.WriteLine("Author: Ivan Andrau \n GitHub: https://github.com/IvanAndrau"); 
+                        break;
+                    case 3:
+                        Environment.Exit(0);
+                        break;
+                }
 
-            c3 = GetState("row3 column3");
-            Draw(a1, a2, a3, b1, b2, b3, c1, c2, c3);
-
-
-            Console.WriteLine("Game Over!");
+            }
         }
     }
 }
